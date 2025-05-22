@@ -1,14 +1,13 @@
-# 2. retriever config
+# 1. retriever config
 EMBEDDER = '/root/data/Dataset/all-MiniLM-L6-v2'
 HNSW_INDEX = '/root/data/Dataset/hnsw_index_efc500_m32.bin'
 CORPUS = '/root/data/Dataset/wiki-18-corpus/wiki-18.jsonl'
 
 
-# 3. generator config
+# 2. generator config
 # Model and Data Paths
 MODEL = '/root/data/Dataset/SearchR1-nq_hotpotqa_train-qwen2.5-7b-em-ppo'
 DATA = '/root/data/Dataset/FlashRAG_datasets/musique/dev.jsonl'
-
 # Prompt Template Configuration
 # qwen2.5-7b prompt template for example
 PROMPT_TEMPLATE = (
@@ -25,7 +24,7 @@ INFORMATION_LABLE_A = '<information>'
 INFORMATION_LABLE_B = '</information>'
 IS_INSTRUCT = False
 
-# Experiment Setups
+# 3. Experiment Setups
 OUTPUT_FILE = '/root/SearchAgent-X/experiments/output/test.log'
 REQUEST_RATE = 2.0 # REQUEST_RATE > 0 for online, REQUEST_RATE = 'inf' for offline
 TEST_DURATION = 600
@@ -33,4 +32,4 @@ MAX_PROMPT_NUM = 5000
 TOPK = 5
 TENSOR_PARALLEL_SIZE = 1
 PRIORITY_SCHEDULE = 6
-RETRIEVER = 1 # 0 for ENN, 1 for ANN
+RETRIEVER = 1 # 0 for ENN, 1 for ANN 

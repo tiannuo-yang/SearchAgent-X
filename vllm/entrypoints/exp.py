@@ -10,8 +10,8 @@ config_dir = os.path.abspath(os.path.join(current_dir, '..', '..'))
 sys.path.insert(0, config_dir)
 from config import (
     OUTPUT_FILE,
-    MODEL_LIST,
-    DATA_LIST,
+    MODEL,
+    DATA,
     PROMPT_TEMPLATE,
     SEARCH_LABLE_A,
     SEARCH_LABLE_B,

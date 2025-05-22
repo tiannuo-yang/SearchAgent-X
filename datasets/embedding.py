@@ -22,11 +22,11 @@ def encode_on_gpu(sentences, start_idx, end_idx, gpu_id, memmap, queue, model_pa
     print(f'GPU {gpu_id} Part Ok: {part_embeddings.shape}')
 
 def main(model_path, data_file_path, embedding_save_path):
-    num_gpus = torch.cuda.device_count()
-    if num_gpus < 2:
-        raise ValueError("Need at least 2 GPUs!")
+    # num_gpus = torch.cuda.device_count()
+    # if num_gpus < 2:
+    #     raise ValueError("Need at least 2 GPUs!")
 
-    print(f'Using {num_gpus} GPUs!')
+    # print(f'Using {num_gpus} GPUs!')
 
     corpus = datasets.load_dataset(
         'json',
