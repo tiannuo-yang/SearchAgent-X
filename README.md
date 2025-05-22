@@ -6,7 +6,7 @@
 
 <p align="center">
   <strong>SearchAgent-X</strong> is a highly efficient system for reasoning-search interleaved large language model (LLM) agents. <br>
-  Compared to the popular LLM inference framework vLLM and HNSW-based retrieval methods, it achieves <strong>1.3–3.4×</strong> higher throughput with only <strong>0.2–0.6×</strong> the latency. See detailed techniques in our paper.
+  Compared to the popular LLM inference framework vLLM and HNSW-based retrieval methods, it achieves <strong>1.3–3.4×</strong> higher throughput with only <strong>0.2–0.6×</strong> the latency. See detailed techniques in <a href="https://arxiv.org/abs/2505.12065">our paper</a> .
 </p >
 
 <div align="center">    
