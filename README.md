@@ -53,11 +53,11 @@ SearchAgent-X requires these datasets and models for running interleaved search 
 
 
 ## 👨‍💻 For Developers
-### How To Encode And Index My Own Corpurs?
+### How To Encode And Index My Own Corpus?
 
 ### How To Use Other Reasoning Models?
 
 ### How To Deploy SearchAgent-X in Offline/Online Scenarios?
 
 ## Acknowledgments
-SearchAgent-X is built upon [vLLM](https://github.com/vllm-project/vllm) for its high-performance PagedAttention; and [HNSWLib](https://github.com/nmslib/hnswlib) for its favorable tradeoff between retrieval speed and accuracy. Thanks for their awesome work! In addition, our motivation of addressing search agent efficiency comes from these pioneering search agent models: [Search-R1](https://github.com/petergriffinjin/search-r1), [ReSearch](https://github.com/Agent-RL/ReCall?tab=readme-ov-file), and [R1-Search](https://github.com/RUCAIBox/R1-Searcher). We believe this agentic paradigm will be the next generation of RAG.
+SearchAgent-X is built upon [vLLM](https://github.com/vllm-project/vllm) for its high-performance PagedAttention; and [HNSWLib](https://github.com/nmslib/hnswlib) for its favorable tradeoff between retrieval speed and accuracy. Thanks for their awesome work! In addition, our motivation of addressing search agent efficiency comes from these pioneering search agent models: [Search-R1](https://github.com/petergriffinjin/search-r1), [ReSearch](https://github.com/Agent-RL/ReCall?tab=readme-ov-file), and [R1-Searcher](https://github.com/RUCAIBox/R1-Searcher). We believe this agentic paradigm will be the next generation of RAG.
