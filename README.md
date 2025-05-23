@@ -1,6 +1,4 @@
-<div align="center">    
-  <img src="./logo.png" alt="SearchAgent-X Logo" width="40%"> <br>
-</div>
+![SearchAgent-X Logo](./logo.jpg)
 
 ***
 
@@ -9,9 +7,7 @@
   Compared to the popular LLM inference framework vLLM and HNSW-based retrieval methods, it achieves <strong>1.3–3.4×</strong> higher throughput with only <strong>0.2–0.6×</strong> the latency.
 </p >
 
-<div align="center">    
-  <img src="./performance.png" alt="SearchAgent-X Performance" width="90%">
-</div>
+![SearchAgent-X Performance](./performance.png)
 
 🔔 Where You May Need **SearchAgent-X**:
 - Deploying LLM-powered search agents to serve complex user queries, while expecting low latency and high throughput.
@@ -99,4 +95,7 @@ Then, simply execute SearchAgent-X.
 ## 📋 What's Next?
 1. Integrating SearchAgent-X into post-training frameworks like [Search-R1](https://github.com/petergriffinjin/search-r1), [ReSearch](https://github.com/Agent-RL/ReCall?tab=readme-ov-file), and [R1-Searcher](https://github.com/RUCAIBox/R1-Searcher), measuring end-to-end training benefits.
 2. Supporting more commonly used retrieval methods, such as IVF_PQ and SCANN.
-3. ... (Expecting Your Feedback 😄!
+3. ... (Expecting your feedback 😄!
+
+## Acknowledgements
+SearchAgent-X is built upon [vLLM](https://github.com/vllm-project/vllm) for its high-performance PagedAttention; and [HNSWLib](https://github.com/nmslib/hnswlib) for its favorable tradeoff between retrieval speed and accuracy. Thanks for their awesome work!
