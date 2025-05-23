@@ -39,7 +39,6 @@ class ScheduledSequenceGroup:
     # 1 for decoding. Same as prompt tokens for prefill, but if prefill is
     # chunked, it can be smaller than that.
     token_chunk_size: int
-    # tiannuo
     hit_count: int = 0
 
 
@@ -303,7 +302,6 @@ class Scheduler:
                         seq_group=seq_group,
                         token_chunk_size=num_prefill_tokens,
                         hit_count=hit_count,))
-                ## tiannuo: record the exec time of prefill, for reordering decode requests
                 seq_group.metrics.prefill_time = time.time()
             self.waiting.extendleft(leftover_waiting_sequences)
 
@@ -507,7 +505,6 @@ class Scheduler:
                         seq_group=seq_group,
                         token_chunk_size=num_prefill_tokens,
                         hit_count=hit_count,))
-                ## tiannuo: record the exec time of prefill, for reordering decode requests
                 seq_group.metrics.prefill_time = time.time()
 
             self.waiting.extendleft(leftover_not_prefix)
@@ -548,7 +545,6 @@ class Scheduler:
                             seq_group=seq_group,
                             token_chunk_size=num_prefill_tokens,
                             hit_count=hit_count,))
-                    ## tiannuo: record the exec time of prefill, for reordering decode requests
                     seq_group.metrics.prefill_time = time.time()
 
             if scheduled or ignored_seq_groups:

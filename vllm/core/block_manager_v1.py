@@ -95,7 +95,6 @@ class CachedBlockAllocator(BlockAllocatorBase):
     def allocate(self,
                  block_hash: Optional[int] = None,
                  num_hashed_tokens: int = 0) -> Tuple[PhysicalTokenBlock, bool]:
-        # tiannuo: record hit rate of each block
         hit_flag = False
         if block_hash is None:
             block_hash = next(self.default_hash_ctr)
@@ -285,7 +284,6 @@ class BlockSpaceManagerV1(BlockSpaceManager):
 
         block_table: BlockTable = []
 
-        # tiannuo: record hit counts of all blocks of a seq
         hit_count = 0
         for logical_idx in range(num_prompt_blocks):
             if (self.block_sliding_window is not None
