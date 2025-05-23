@@ -1,0 +1,8 @@
+# Requires: python>=3.12
+numpy>=2.0.1
+fastapi>=0.112.2
+uvicorn>=0.32.1
+datasets>=3.3.2
+sentence-transformers==4.0.1
+uvloop>=0.21.0
+-e ./hnswlib
