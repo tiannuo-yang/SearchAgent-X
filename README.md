@@ -13,6 +13,10 @@
   <img src="./performance.png" alt="SearchAgent-X Performance" width="90%">
 </div>
 
+🔔 Where You May Need **SearchAgent-X**:
+- Deploying LLM-powered search agents to serve complex user queries, while expecting low latency and high throughput.
+- Post-training search agents (e.g., via reinforcement learning), but facing time-consuming, multi-turn LLM rollouts.
+
 ---
 
 ## 🚀 Quick Start
