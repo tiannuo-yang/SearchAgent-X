@@ -3,9 +3,8 @@ EMBEDDER = '/root/data/Dataset/all-MiniLM-L6-v2'
 HNSW_INDEX = '/root/data/Dataset/hnsw_index_efc500_m32.bin'
 CORPUS = '/root/data/Dataset/wiki-18-corpus/wiki-18.jsonl'
 
-
 # 2. generator config
-# Model and Data Paths
+# Reasoning Model and Data Paths
 MODEL = '/root/data/Dataset/SearchR1-nq_hotpotqa_train-qwen2.5-7b-em-ppo'
 DATA = '/root/data/Dataset/FlashRAG_datasets/musique/dev.jsonl'
 # Prompt Template Configuration
@@ -27,7 +26,7 @@ IS_INSTRUCT = False
 # 3. Experiment Setups
 OUTPUT_FILE = '/root/SearchAgent-X/experiments/output/test.log'
 REQUEST_RATE = 2.0 # REQUEST_RATE > 0 for online, REQUEST_RATE = 'inf' for offline
-TEST_DURATION = 600
+TEST_DURATION = 600 # seconds
 MAX_PROMPT_NUM = 5000
 TOPK = 5
 TENSOR_PARALLEL_SIZE = 1

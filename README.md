@@ -42,6 +42,7 @@ SearchAgent-X requires these datasets and models for running interleaved search 
 - Request Dataset:  [Musique](https://huggingface.co/datasets/RUC-NLPIR/FlashRAG_datasets/tree/main/musique)
 
 ### Run SearchAgent-X
+- Modify the paths to your downloaded embedding model, HNSW index, and corpus in `config.py`
 - Start Retriever Server  
    ```bash
    conda activate retriever_env
