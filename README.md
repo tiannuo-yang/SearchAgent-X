@@ -13,6 +13,10 @@
   <img src="./performance.png" alt="SearchAgent-X Performance" width="90%">
 </div>
 
+🔔 Where You May Need **SearchAgent-X**:
+- Deploying LLM-powered search agents to serve complex user queries, while expecting low latency and high throughput.
+- Post-training search agents (e.g., via reinforcement learning), but facing time-consuming, multi-turn LLM rollouts.
+
 ---
 
 ## 🚀 Quick Start
@@ -90,5 +94,11 @@ You can integrate different reasoning models by editing the `config.py`. Specifi
     Set `REQUEST_RATE` (requests per second) to a specific numerical value (e.g., `5`) in `config.py`.
 
 Then, simply execute SearchAgent-X.
+
+## 📋 What's Next?
+1. Integrating SearchAgent-X into post-training frameworks like [Search-R1](https://github.com/petergriffinjin/search-r1), [ReSearch](https://github.com/Agent-RL/ReCall?tab=readme-ov-file), and [R1-Searcher](https://github.com/RUCAIBox/R1-Searcher), measuring end-to-end training benefits.
+2. Supporting more commonly used retrieval methods, such as IVF_PQ and SCANN.
+3. ... (Expecting Your Feedback 😄!
+
 ## Acknowledgments
 SearchAgent-X is built upon [vLLM](https://github.com/vllm-project/vllm) for its high-performance PagedAttention; and [HNSWLib](https://github.com/nmslib/hnswlib) for its favorable tradeoff between retrieval speed and accuracy. Thanks for their awesome work! In addition, our motivation of addressing search agent efficiency comes from these pioneering search agent models: [Search-R1](https://github.com/petergriffinjin/search-r1), [ReSearch](https://github.com/Agent-RL/ReCall?tab=readme-ov-file), and [R1-Searcher](https://github.com/RUCAIBox/R1-Searcher). We believe this agentic paradigm will be the next generation of RAG.
