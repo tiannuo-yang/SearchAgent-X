@@ -54,10 +54,41 @@ SearchAgent-X requires these datasets and models for running interleaved search 
 
 ## 👨‍💻 For Developers
 ### How To Encode And Index My Own Corpus?
+The `dataset` directory contains scripts for processing your corpus: `embedding.py` for generating sentence embeddings and `build_hnsw.py` for constructing the HNSW index.
 
+Follow these steps to prepare your corpus and build the search index:
+
+1.  **Encode Corpus:**
+    Use `embedding.py` to convert the corpus into embeddings using a specified Sentence Transformer model.
+
+    ```bash
+    python ./datasets/embedding.py <SentenceTransformer_model_path> <data_file_path> <embedding_save_path>
+    ```
+    * `<SentenceTransformer_model_path>`: Path to your specified Sentence Transformer model.
+    * `<data_file_path>`: Path to your input data file (e.g., a `.jsonl` corpus).
+    * `<embedding_save_path>`: Desired path to save the generated embeddings.
+
+2.  **Build HNSW Index:**
+    Use `build_hnsw.py` to create an HNSW index for retrieval. You need to specify the `num_elements` and `data_dim` within the `build_hnsw.py` script based on your generated embeddings.
+
+    ```bash
+    python ./datasets/build_hnsw.py <embeddings_data_path> <hnsw_index_path>
+    ```
+    * `<embeddings_data_path>`: Path to the embeddings file generated in the previous step.
+    * `<hnsw_index_path>`: Desired path to save the HNSW index file.
 ### How To Use Other Reasoning Models?
-
+You can integrate different reasoning models by editing the `config.py`. Specifically, you'll need to:
+1.  Set the `MODEL` path to your desired reasoning model.
+2.  Configure the appropriate prompt template for that model within `config.py`.
 ### How To Deploy SearchAgent-X in Offline/Online Scenarios?
+* **Offline Deployment:**
+    Ideal for batch processing or scenarios where rate limiting isn't needed.
+    Set `REQUEST_RATE = 'inf'` in `config.py`.
 
+* **Online Deployment:**
+    Designed for real-time applications where you need to manage request rate.
+    Set `REQUEST_RATE` (requests per second) to a specific numerical value (e.g., `5`) in `config.py`.
+
+Then, simply execute SearchAgent-X.
 ## Acknowledgments
 SearchAgent-X is built upon [vLLM](https://github.com/vllm-project/vllm) for its high-performance PagedAttention; and [HNSWLib](https://github.com/nmslib/hnswlib) for its favorable tradeoff between retrieval speed and accuracy. Thanks for their awesome work! In addition, our motivation of addressing search agent efficiency comes from these pioneering search agent models: [Search-R1](https://github.com/petergriffinjin/search-r1), [ReSearch](https://github.com/Agent-RL/ReCall?tab=readme-ov-file), and [R1-Searcher](https://github.com/RUCAIBox/R1-Searcher). We believe this agentic paradigm will be the next generation of RAG.

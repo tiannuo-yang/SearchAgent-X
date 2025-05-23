@@ -336,7 +336,7 @@ class LLM:
 if __name__ == '__main__':
     data = QAData([DATA],1000000)
 
-    config = Exp_Config(model=MODEL, max_model_len=20480, topk=TOPK, max_prompt_num=MAX_PROMPT_NUM, enable_prefix_cache=True, request_rate=REQUEST_RATE, priority_schedule=6)
+    config = Exp_Config(model=MODEL, max_model_len=20480, topk=TOPK, max_prompt_num=MAX_PROMPT_NUM, enable_prefix_cache=True, request_rate=float(REQUEST_RATE), priority_schedule=6)
     if IS_INSTRUCT: llm0 = LLM(exp_config=Exp_Config(model=MODEL))
     prompt_list = []
     for question, answer in data.get_pairs(): 
