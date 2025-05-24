@@ -43,7 +43,7 @@ class Exp_Config:
         tensor_parallel_size: int = TENSOR_PARALLEL_SIZE,
         max_model_len: int = 16000,
         enforce_eager: bool = True,
-        priority_schedule: int = -1, # 0 for search_count-only priority schedule, 1 for hierarchical priority schedule, -1 for vanilla schedule
+        priority_schedule: int = -1, 
         max_prompt_num: int = 5000,
         non_stall_search: bool = True,
         delay_factor: float = 0.5,
