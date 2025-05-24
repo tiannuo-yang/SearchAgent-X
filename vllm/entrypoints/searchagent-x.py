@@ -54,7 +54,7 @@ os.environ["CUDA_VISIBLE_DEVICES"] = '0'
 
 class LLM:
     def __init__(self, exp_config: Exp_Config) -> None:
-        """初始化LLM引擎和相关状态，使用Exp_Config实例"""
+        """Initialize the LLM engine and related states using an Exp_Config instance."""
         self.exp_config = exp_config
         engine_args = EngineArgs(
             model=exp_config.model,
@@ -70,11 +70,11 @@ class LLM:
         self.request_counter = Counter()
 
     def get_tokenizer(self) -> Union[PreTrainedTokenizer, PreTrainedTokenizerFast]:
-        """获取分词器"""
+        """Get the tokenizer."""
         return self.llm_engine.tokenizer.tokenizer
 
     def _add_request(self, prompt: Optional[str], question: Optional[str] = None, max_possi_prefix_block_len: Optional[int] = 0, arr_time: Optional[float] = None, submit_time: Optional[float] = None) -> str:
-        """添加请求到引擎"""
+        """Add a request to the engine."""
         request_id = str(next(self.request_counter))
         sampling_params = SamplingParams(
             max_tokens=self.exp_config.max_tokens,
@@ -107,6 +107,7 @@ class LLM:
             seq_groups = self.llm_engine.scheduler.waiting
             req_ids = [seq_group.request_id for seq_group in seq_groups]
             wait_durations_cur = [now - self.requests_arr_time[r] for r in req_ids]
+            # Sort requests by current waiting duration in descending order
             self.llm_engine.scheduler.waiting = deque(elem for _, elem in sorted(zip(wait_durations_cur, seq_groups), key=lambda x: x[0], reverse=True))
 
         if self.exp_config.priority_schedule == 0:
@@ -115,6 +116,7 @@ class LLM:
             roots = [Exp_Output.find_root(self.successive_requests, r) for r in req_ids]
             search_counts = [len(r) for r in roots]
 
+            # Sort requests by search count (number of successive requests) in descending order
             self.llm_engine.scheduler.waiting = deque(elem for _, elem in sorted(zip(search_counts, seq_groups), key=lambda x: x[0], reverse=True))
 
         elif self.exp_config.priority_schedule >= 1:
@@ -140,20 +142,21 @@ class LLM:
                 for idx in range(granularity-1, -1, -1):  # for different levels, e.g., [3,2,1,0]
                     if (search_counts[i] > sc_levels[idx] or wait_durations[i] > wd_levels[idx] or ctx_lengths[i] > cl_levels[idx]) or (idx == 0):
                     # if search_counts[i] >= sc_levels[idx] or ctx_lengths[i] >= cl_levels[idx]:
-                        # 按照 wait_durations_cur[i] 从大到小排序插入
+                        # Insert in descending order of wait_durations_cur[i]
                         insert_position = 0
                         while insert_position < len(level_reqs[idx]) and wait_durations_cur[i] <= wait_durations_cur[level_reqs[idx][insert_position]]:
                             insert_position += 1
                         level_reqs[idx].insert(insert_position, i)
                         break
 
+            # Reconstruct the waiting queue based on the prioritized levels
             final_order = [r for idx in range(granularity-1, -1, -1) for r in level_reqs[idx]]
             temp = list(seq_groups)
             seq_groups.clear()
             seq_groups.extend([temp[i] for i in final_order])
 
     def _record_for_one_step(self, scheduler_outputs) -> None:
-        """记录单步的token生成时间"""
+        """Record token generation time for a single step."""
         if not scheduler_outputs.is_empty():
             now = time.time()
             for scheduled_seq_group in scheduler_outputs.scheduled_seq_groups:
@@ -184,7 +187,7 @@ class LLM:
                     
 
     async def run_engine_with_search(self, arrival_requests) -> Exp_Output:
-        """运行引擎并处理搜索任务"""
+        """Run the engine and handle search tasks."""
         self.outputs: List[RequestOutput] = []
         self.search_tasks = {}
         self.search_durations = {}
@@ -215,18 +218,19 @@ class LLM:
                 self._add_request(prompt=arrival_requests[0][0], question=arrival_requests[0][1], arr_time=arrival_requests[0][2])
                 arrival_requests.pop(0)
             
+            # Check for stalled search tasks if non_stall_search is enabled and there are waiting requests
             if self.exp_config.non_stall_search and self.search_tasks and len(self.llm_engine.scheduler.waiting) > 0:
                 terminated_requests = await self._check_stall_search()
             else:
                 terminated_requests = []
             assert set(terminated_requests).issubset(self.search_tasks.keys()), f"Stalled requests not in search_tasks: {terminated_requests} not in {self.search_tasks.keys()}"
 
-            # 总是先获取当前完成的任务
+            # currently completed task
             done_tasks = [req_id for req_id, task in self.search_tasks.items() if task.done()]
 
-            # 如果有指定终止请求，等待它们完成
+            # If there are specified terminated requests, wait for them to complete
             if terminated_requests:
-                # 找出那些还没完成的任务
+                # unfinished tasks
                 pending_tasks = [
                     self.search_tasks[req_id]
                     for req_id in terminated_requests
@@ -235,9 +239,10 @@ class LLM:
                 if pending_tasks:
                     await asyncio.wait(pending_tasks, return_when=asyncio.ALL_COMPLETED)
 
-                # 更新 done_tasks，再次确认全部终止任务都完成
+                # Update done_tasks to confirm all terminated tasks are completed
                 done_tasks = [req_id for req_id, task in self.search_tasks.items() if task.done()]
 
+            # Process completed search tasks and add new requests
             for task_id in done_tasks:
                 req_id_old, new_ctx, max_possi_prefix_block_len, finish_time = self.search_tasks[task_id].result()
                 root = Exp_Output.find_root(self.successive_requests, req_id_old)
@@ -245,11 +250,13 @@ class LLM:
                 root.append(req_id_new)
                 del self.search_tasks[task_id]
 
+            # If there are unfinished requests in the LLM engine, run a step
             if self.llm_engine.has_unfinished_requests():
                 self._priority_schedule()
                 loop = asyncio.get_event_loop()
                 step_outputs, scheduler_outputs = await loop.run_in_executor(self.executor, self.llm_engine.step)
 
+                # Process outputs from the LLM engine step
                 for output in step_outputs:
                     ctx = output.prompt + output.outputs[0].text
                     query = self._check_for_search(ctx)
@@ -300,8 +307,8 @@ class LLM:
         self.ann_durations[request_id] = res['t_ann']
         self.thread_durations[request_id] = res['t_thread']
 
-        # 3. 构造返回信息
-        info = '\n'.join([f"(Doc {i+1})" + t.replace('\n',' ') for i,t in enumerate(neighbor_texts[0])])  # neighbor_texts 是一个列表的列表
+        # Construct response information
+        info = '\n'.join([f"(Doc {i+1})" + t.replace('\n',' ') for i,t in enumerate(neighbor_texts[0])])  # neighbor_texts is a list of lists
         max_possi_prefix_len = len(self.llm_engine.tokenizer.tokenizer.tokenize(ctx))
         max_possi_prefix_block_len = max_possi_prefix_len // self.llm_engine.cache_config.block_size
         return request_id, f"{ctx}\n {INFORMATION_LABLE_A} {info} {INFORMATION_LABLE_B} \n", max_possi_prefix_block_len, finish_time

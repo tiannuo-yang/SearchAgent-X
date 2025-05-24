@@ -5,7 +5,7 @@ import json
 
 class QAData:
     def __init__(self, data_file_list, num_samples=500) -> None:
-        """初始化HotpotQA数据类"""
+        """Initializes the HotpotQA data class."""
         self.golden_answers = {}
         for data_file in data_file_list:
             test_dataset = load_dataset(
@@ -21,17 +21,17 @@ class QAData:
                     break
 
     def get_pairs(self) -> List[Tuple[str, str]]:
-        """返回问题和答案对"""
+        """Returns question and answer pairs."""
         return list(self.golden_answers.items())
 
     @staticmethod
     def extract_answer(text: str) -> Optional[str]:
-        """提取最后一个<answer>内容"""
+        """Extracts the content of the last <answer> tag."""
         matches = re.findall(r'<answer>(.*?)</answer>', text)
         return matches[-1].strip() if matches else None
 
     def accuracy(self, outputs: List[Tuple[str, str]], single_answer=True) -> float:
-        """计算准确度，仅考虑有答案的输出"""
+        """Calculates accuracy, considering only outputs with answers."""
         correct = 0
         total = 0
         for question, text in outputs:

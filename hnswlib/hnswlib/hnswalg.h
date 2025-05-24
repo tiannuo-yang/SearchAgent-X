@@ -82,22 +82,22 @@ public:
     };
 
     std::vector<InfoEntry> info_pool;
-    // std::queue<size_t> free_indices;   // 空闲下标队列
-    std::mutex mtx;                    // 保护共享数据的互斥锁
+    // std::queue<size_t> free_indices;   // Queue of free indices
+    std::mutex mtx;                    // Mutex to protect shared data
 
     SearchThreadInfoManager(size_t initial_size = 50) {
-        // 初始化时预分配一些info
+        // Pre-allocate some info entries during initialization
         info_pool.resize(initial_size);
         // for (size_t i = 0; i < initial_size; ++i) {
         //     free_indices.push(i);
         // }
     }
 
-    // 获取一个可用的info，返回info指针和分配的下标
+    // Acquire an available info entry, returning a pointer to the info and its allocated index
     std::pair<search_thread_info*, size_t> acquire() {
         std::lock_guard<std::mutex> lock(mtx);
 
-        // 如果有空闲的下标
+        // If there is a free index
         for (int index=0; index<info_pool.size(); index++){
             auto &entry = info_pool[index];
             if (!entry.in_use) {
@@ -115,14 +115,9 @@ public:
         // }
 
         throw std::runtime_error("SearchThreadInfoManager: No available search thread info");
-        // // 如果没有空闲的，创建一个新的
-        // size_t new_index = info_pool.size();
-        // info_pool.emplace_back(0, 0.0);
-        // info_pool[new_index].in_use = true;
-        // return std::make_pair(&info_pool[new_index].info, new_index);
     }
 
-    // 根据下标释放info
+    // Release an info entry by its index
     bool release(size_t index) {
         // std::lock_guard<std::mutex> lock(mtx);
         
@@ -132,10 +127,11 @@ public:
         }
 
         info_pool[index].in_use = false;
-        // free_indices.push(index); // 将下标放回空闲队列
+        // free_indices.push(index); // Return the index to the free queue
         return true;
     }
 
+    // Get a list of request IDs that should be stopped based on their EMA
     std::vector<size_t> get_stop_req_ids(float stop_ema) {
         // std::lock_guard<std::mutex> lock(mtx);
         std::vector<size_t> stop_req_ids;
