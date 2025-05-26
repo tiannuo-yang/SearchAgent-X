@@ -39,11 +39,11 @@ def test_rms_norm(
     x *= scale
     residual = torch.randn_like(x) * scale if add_residual else None
 
-    # NOTE(woosuk): The reference implementation should be executed first
+    # NOTE(): The reference implementation should be executed first
     # because the custom kernel is in-place.
     ref_out = layer._forward(x, residual)
     out = layer(x, residual)
-    # NOTE(woosuk): LayerNorm operators (including RMS) typically have larger
+    # NOTE(): LayerNorm operators (including RMS) typically have larger
     # numerical errors than other operators because they involve reductions.
     # Therefore, we use a larger tolerance.
     if add_residual:

@@ -134,7 +134,7 @@ class Worker:
         # profiled peak memory.
         torch.cuda.synchronize()
         free_gpu_memory, total_gpu_memory = torch.cuda.mem_get_info()
-        # NOTE(woosuk): Here we assume that the other processes using the same
+        # NOTE(): Here we assume that the other processes using the same
         # GPU did not change their memory usage during the profiling.
         peak_memory = self.init_gpu_memory - free_gpu_memory
         assert peak_memory > 0, (
@@ -176,7 +176,7 @@ class Worker:
         blocks_to_copy: Dict[int, List[int]],
     ) -> None:
         # Issue cache operations.
-        # TODO(woosuk): Profile swapping overhead and optimize if needed.
+        # TODO(): Profile swapping overhead and optimize if needed.
         if blocks_to_swap_in:
             self.cache_engine.swap_in(blocks_to_swap_in)
         if blocks_to_swap_out:
@@ -282,7 +282,7 @@ def init_distributed_environment(
                 "size does not match parallel_config.world_size "
                 f"({pynccl_world_size} vs. {parallel_config.world_size}).")
     elif parallel_config.world_size > 1:
-        # NOTE(woosuk): We don't initialize pynccl process group when world size
+        # NOTE(): We don't initialize pynccl process group when world size
         # is 1.
         pynccl_utils.init_process_group(
             world_size=parallel_config.world_size,

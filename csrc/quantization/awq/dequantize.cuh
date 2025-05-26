@@ -1,14 +1,3 @@
-/*
-Adapted from https://github.com/mit-han-lab/llm-awq
-Modified from NVIDIA FasterTransformer: https://github.com/NVIDIA/FasterTransformer/blob/main/src/fastertransformer/cutlass_extensions/include/cutlass_extensions/interleaved_numeric_conversion.h
-@article{lin2023awq,
-  title={AWQ: Activation-aware Weight Quantization for LLM Compression and Acceleration},
-  author={Lin, Ji and Tang, Jiaming and Tang, Haotian and Yang, Shang and Dang, Xingyu and Han, Song},
-  journal={arXiv},
-  year={2023}
-}
-*/
-
 #pragma once
 
 namespace vllm {
@@ -60,13 +49,13 @@ __device__ uint4 dequantize_s4_to_fp16x2(uint32_t const& source)
 
     // This is the half2 {1032, 1032} represented as an integer.
     // static constexpr uint32_t FP16_TOP_MAGIC_NUM = 0x64086408;
-    // Haotian: subtract {1024, 1024} instead, we do not need to map to [-8, 7]
+    //  : subtract {1024, 1024} instead, we do not need to map to [-8, 7]
     static constexpr uint32_t FP16_TOP_MAGIC_NUM = 0x64006400;
     // This is the half2 {1 / 16, 1 / 16} represented as an integer.
     static constexpr uint32_t ONE_SIXTEENTH = 0x2c002c00;
     // This is the half2 {-72, -72} represented as an integer.
     // static constexpr uint32_t NEG_72 = 0xd480d480;
-    // Haotian: Let's use {-64, -64}.
+    //  : Let's use {-64, -64}.
     static constexpr uint32_t NEG_64 = 0xd400d400;
 
     // Finally, we construct the output numbers.

@@ -14,7 +14,7 @@ from vllm import LLM, SamplingParams
 def main(args: argparse.Namespace):
     print(args)
 
-    # NOTE(woosuk): If the request cannot be processed in a single batch,
+    # NOTE(): If the request cannot be processed in a single batch,
     # the engine will automatically process the request in multiple batches.
     llm = LLM(model=args.model,
               tokenizer=args.tokenizer,

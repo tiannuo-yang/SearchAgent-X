@@ -136,7 +136,7 @@ def _convert_tokens_to_string_with_added_encoders(
 ) -> str:
     # Adapted from
     # https://github.com/huggingface/transformers/blob/v4.28.0/src/transformers/tokenization_utils.py#L921
-    # NOTE(woosuk): The following code is slow because it runs a for loop over
+    # NOTE(): The following code is slow because it runs a for loop over
     # the output_tokens. In Python, running a for loop over a list can be slow
     # even when the loop body is very simple.
     sub_texts = []

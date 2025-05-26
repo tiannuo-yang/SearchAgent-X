@@ -70,7 +70,7 @@ inline __device__ float block_sum(float* red_smem, float sum) {
   return VLLM_SHFL_SYNC(sum, 0);
 }
 
-// TODO(woosuk): Merge the last two dimensions of the grid.
+// TODO(): Merge the last two dimensions of the grid.
 // Grid: (num_heads, num_seqs, max_num_partitions).
 template<
   typename scalar_t,
@@ -157,7 +157,7 @@ __device__ void paged_attention_kernel(
   // For example, if the the thread group size is 4, then the first thread in the group
   // has 0, 4, 8, ... th vectors of the query, and the second thread has 1, 5, 9, ...
   // th vectors of the query, and so on.
-  // NOTE(woosuk): Because q is split from a qkv tensor, it may not be contiguous.
+  // NOTE(): Because q is split from a qkv tensor, it may not be contiguous.
   const scalar_t* q_ptr = q + seq_idx * q_stride + head_idx * HEAD_SIZE;
   __shared__ Q_vec q_vecs[THREAD_GROUP_SIZE][NUM_VECS_PER_THREAD];
 #pragma unroll
@@ -169,7 +169,7 @@ __device__ void paged_attention_kernel(
 
   // Memory planning.
   extern __shared__ char shared_mem[];
-  // NOTE(woosuk): We use FP32 for the softmax logits for better accuracy.
+  // NOTE(): We use FP32 for the softmax logits for better accuracy.
   float* logits = reinterpret_cast<float*>(shared_mem);
   // Workspace for reduction.
   __shared__ float red_smem[2 * NUM_WARPS];
@@ -185,7 +185,7 @@ __device__ void paged_attention_kernel(
   // dot product with the query.
   const int* block_table = block_tables + seq_idx * max_num_blocks_per_seq;
   for (int block_idx = start_block_idx + warp_idx; block_idx < end_block_idx; block_idx += NUM_WARPS) {
-    // NOTE(woosuk): The block number is stored in int32. However, we cast it to int64
+    // NOTE(): The block number is stored in int32. However, we cast it to int64
     // because int32 can lead to overflow when this variable is multiplied by large numbers
     // (e.g., kv_block_stride).
     const int64_t physical_block_number = static_cast<int64_t>(block_table[block_idx]);
@@ -229,7 +229,7 @@ __device__ void paged_attention_kernel(
 
       if (thread_group_offset == 0) {
         // Store the partial reductions to shared memory.
-        // NOTE(woosuk): It is required to zero out the masked logits.
+        // NOTE(): It is required to zero out the masked logits.
         const bool mask = token_idx >= context_len;
         logits[token_idx - start_token_idx] = mask ? 0.f : qk;
         // Update the max value.
@@ -250,7 +250,7 @@ __device__ void paged_attention_kernel(
   }
   __syncthreads();
 
-  // TODO(woosuk): Refactor this part.
+  // TODO(): Refactor this part.
   // Get the max qk value for the sequence.
   qk_max = lane < NUM_WARPS ? red_smem[lane] : -FLT_MAX;
 #pragma unroll
@@ -301,7 +301,7 @@ __device__ void paged_attention_kernel(
   constexpr int NUM_ROWS_PER_ITER = WARP_SIZE / NUM_V_VECS_PER_ROW;
   constexpr int NUM_ROWS_PER_THREAD = DIVIDE_ROUND_UP(HEAD_SIZE, NUM_ROWS_PER_ITER);
 
-  // NOTE(woosuk): We use FP32 for the accumulator for better accuracy.
+  // NOTE(): We use FP32 for the accumulator for better accuracy.
   float accs[NUM_ROWS_PER_THREAD];
 #pragma unroll
   for (int i = 0; i < NUM_ROWS_PER_THREAD; i++) {
@@ -311,7 +311,7 @@ __device__ void paged_attention_kernel(
   scalar_t zero_value;
   zero(zero_value);
   for (int block_idx = start_block_idx + warp_idx; block_idx < end_block_idx; block_idx += NUM_WARPS) {
-    // NOTE(woosuk): The block number is stored in int32. However, we cast it to int64
+    // NOTE(): The block number is stored in int32. However, we cast it to int64
     // because int32 can lead to overflow when this variable is multiplied by large numbers
     // (e.g., kv_block_stride).
     const int64_t physical_block_number = static_cast<int64_t>(block_table[block_idx]);
@@ -340,7 +340,7 @@ __device__ void paged_attention_kernel(
           v_vec = *reinterpret_cast<const V_vec*>(v_ptr + offset);
         }
         if (block_idx == num_context_blocks - 1) {
-          // NOTE(woosuk): When v_vec contains the tokens that are out of the context,
+          // NOTE(): When v_vec contains the tokens that are out of the context,
           // we should explicitly zero out the values since they may contain NaNs.
           // See https://github.com/vllm-project/vllm/issues/641#issuecomment-1682544472
           scalar_t* v_vec_ptr = reinterpret_cast<scalar_t*>(&v_vec);
@@ -365,7 +365,7 @@ __device__ void paged_attention_kernel(
     accs[i] = acc;
   }
 
-  // NOTE(woosuk): A barrier is required because the shared memory space for logits
+  // NOTE(): A barrier is required because the shared memory space for logits
   // is reused for the output.
   __syncthreads();
 
@@ -596,7 +596,7 @@ __global__ void paged_attention_v2_reduce_kernel(
     kv_block_stride,                                                                          \
     kv_head_stride);
 
-// TODO(woosuk): Tune NUM_THREADS.
+// TODO(): Tune NUM_THREADS.
 template<
   typename T,
   typename CACHE_T,
@@ -650,7 +650,7 @@ void paged_attention_v1_launcher(
   const at::cuda::OptionalCUDAGuard device_guard(device_of(query));
   const cudaStream_t stream = at::cuda::getCurrentCUDAStream();
   switch (head_size) {
-    // NOTE(woosuk): To reduce the compilation time, we only compile for the
+    // NOTE(): To reduce the compilation time, we only compile for the
     // head sizes that we use in the model. However, we can easily extend this
     // to support any head size which is a multiple of 16.
     case 64:
@@ -690,7 +690,7 @@ void paged_attention_v1_launcher(
     max_context_len,                                                         \
     alibi_slopes);
 
-// NOTE(woosuk): To reduce the compilation time, we omitted block sizes
+// NOTE(): To reduce the compilation time, we omitted block sizes
 // 1, 2, 4, 64, 128, 256.
 #define CALL_V1_LAUNCHER_BLOCK_SIZE(T, CACHE_T, IS_FP8_E5M2_KV_CACHE) \
   switch (block_size) {                                               \
@@ -837,7 +837,7 @@ void paged_attention_v2_launcher(
   const at::cuda::OptionalCUDAGuard device_guard(device_of(query));
   const cudaStream_t stream = at::cuda::getCurrentCUDAStream();
   switch (head_size) {
-    // NOTE(woosuk): To reduce the compilation time, we only compile for the
+    // NOTE(): To reduce the compilation time, we only compile for the
     // head sizes that we use in the model. However, we can easily extend this
     // to support any head size which is a multiple of 16.
     case 64:
@@ -880,7 +880,7 @@ void paged_attention_v2_launcher(
     max_context_len,                                                             \
     alibi_slopes);
 
-// NOTE(woosuk): To reduce the compilation time, we omitted block sizes
+// NOTE(): To reduce the compilation time, we omitted block sizes
 // 1, 2, 4, 64, 128, 256.
 #define CALL_V2_LAUNCHER_BLOCK_SIZE(T, CACHE_T, IS_FP8_E5M2_KV_CACHE)       \
   switch (block_size) {                                                     \

@@ -61,7 +61,7 @@ def test_rotary_embedding(
                         dtype=dtype)
     key = torch.randn_like(query)
 
-    # NOTE(woosuk): The reference implementation should be executed first
+    # NOTE(): The reference implementation should be executed first
     # because the custom kernel is in-place.
     ref_query, ref_key = rope._forward(positions, query, key)
     out_query, out_key = rope.forward(positions, query, key)
@@ -118,7 +118,7 @@ def test_batched_rotary_embedding(
                         dtype=dtype)
     key = torch.randn_like(query)
 
-    # NOTE(woosuk): The reference implementation should be executed first
+    # NOTE(): The reference implementation should be executed first
     # because the custom kernel is in-place.
     ref_query, ref_key = rope._forward(positions, query, key)
     out_query, out_key = rope.forward(positions,
@@ -192,7 +192,7 @@ def test_batched_rotary_embedding_multi_lora(
                                 device=device)
     query_offsets = offset_map[query_types]
 
-    # NOTE(woosuk): The reference implementation should be executed first
+    # NOTE(): The reference implementation should be executed first
     # because the custom kernel is in-place.
     ref_query, ref_key = rope._forward(positions, query, key, query_offsets)
     out_query, out_key = rope.forward(positions, query, key,

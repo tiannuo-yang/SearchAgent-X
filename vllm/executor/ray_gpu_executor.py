@@ -306,7 +306,7 @@ class RayGPUExecutor(ExecutorBase):
 
         if use_ray_compiled_dag:
             # Right now, compiled DAG can only accept a single
-            # input. TODO(sang): Fix it.
+            # input. TODO( ): Fix it.
             output_channels = self.forward_dag.execute(1)
         else:
             # Start the ray workers first.

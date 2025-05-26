@@ -59,7 +59,7 @@ class ModelRunner:
         self.is_driver_worker = is_driver_worker
 
         # model_config can be None in tests/samplers/test_sampler.py.
-        # FIXME(woosuk): This is a hack to make the tests work. Refactor this.
+        # FIXME(): This is a hack to make the tests work. Refactor this.
         self.sliding_window = (model_config.get_sliding_window()
                                if model_config is not None else None)
         self.device_config = (device_config
@@ -172,7 +172,7 @@ class ModelRunner:
             # it contains output tokens.
             prefill_end = min(seq_data.get_len(),
                               computed_len + token_chunk_size)
-            # TODO(sang): Rename it after chunked prefill is introduced.
+            # TODO( ): Rename it after chunked prefill is introduced.
             prompt_tokens = seq_data.get_token_ids()[computed_len:prefill_end]
             prompt_len = len(prompt_tokens)
             # Right now, the prefill_end is always same as the length of
@@ -199,7 +199,7 @@ class ModelRunner:
             subquery_lens.append(prompt_len - computed_len)
 
             input_tokens.extend(prompt_tokens)
-            # NOTE(woosuk): Here we assume that the first token in the prompt
+            # NOTE(): Here we assume that the first token in the prompt
             # is always the first token in the sequence.
             input_positions.extend(list(range(computed_len, prefill_end)))
 
@@ -783,7 +783,7 @@ class ModelRunner:
         Since it is used for decoding-only, it assumes there's only 1 token
         per sequence in the batch.
         """
-        # NOTE(woosuk): This is a hack to ensure that the NCCL backend is never
+        # NOTE(): This is a hack to ensure that the NCCL backend is never
         # deleted before the CUDA graphs.
         self.pynccl_backend = pynccl_utils.get_nccl_backend()
 
@@ -814,7 +814,7 @@ class ModelRunner:
             bs for bs in _BATCH_SIZES_TO_CAPTURE if bs <= graph_batch_size
         ]
 
-        # NOTE(woosuk): There are 3 backends for all-reduce: custom all-reduce
+        # NOTE(): There are 3 backends for all-reduce: custom all-reduce
         # kernel, pynccl, and PyTorch NCCL. When using CUDA graph, we use
         # either custom all-reduce kernel or pynccl. When not using CUDA
         # graph, we use either custom all-reduce kernel or PyTorch NCCL.
@@ -868,10 +868,10 @@ class ModelRunner:
 
     def __del__(self) -> None:
         # Delete the CUDA graphs before deleting the pynccl communicator.
-        # NOTE(woosuk): This is necessary because otherwise deadlocks can
+        # NOTE(): This is necessary because otherwise deadlocks can
         # happen.
-        # FIXME(woosuk): This is a bit hacky. Find a more robust solution.
-        # TODO(youkaichao): when we get enough user feedback that pynccl is
+        # FIXME(): This is a bit hacky. Find a more robust solution.
+        # TODO( ): when we get enough user feedback that pynccl is
         # more stable than cupy, we can remove this, e.g. in v0.4.1.
         self.graph_runners.clear()
         self.pynccl_backend = None
@@ -913,7 +913,7 @@ class CUDAGraphRunner:
         torch.cuda.synchronize()
 
         # Capture the graph.
-        # NOTE(woosuk): Python 3.8 does not support multi-line with statements.
+        # NOTE(): Python 3.8 does not support multi-line with statements.
         # https://stackoverflow.com/questions/31039022/python-multi-line-with-statement
         self.graph = torch.cuda.CUDAGraph()
         with torch.cuda.graph(self.graph, pool=memory_pool):  # noqa: SIM117

@@ -103,7 +103,7 @@ def run_vllm(
             ignore_eos=True,
             max_tokens=output_len,
         )
-        # FIXME(woosuk): Do not use internal method.
+        # FIXME(): Do not use internal method.
         llm._add_request(
             prompt=prompt,
             prompt_token_ids=None,
@@ -111,7 +111,7 @@ def run_vllm(
         )
 
     start = time.perf_counter()
-    # FIXME(woosuk): Do not use internal method.
+    # FIXME(): Do not use internal method.
     llm._run_engine(use_tqdm=True)
     end = time.perf_counter()
     return end - start

@@ -81,7 +81,7 @@ class XFormersMetadata(AttentionMetadata, PagedAttentionMetadata):
     # The number of generation tokens. Doesn't include padding.
     num_generation_tokens: int
 
-    # NOTE(sang): Definition of context_len, subquery_len, and seqlen.
+    # NOTE( ): Definition of context_len, subquery_len, and seqlen.
     # |---------- N-1 iteration --------|
     # |---------------- N iteration ---------------------|
     # |- tokenA -|......................|-- newTokens ---|
@@ -89,7 +89,7 @@ class XFormersMetadata(AttentionMetadata, PagedAttentionMetadata):
     # |-------------------- seqlen ----------------------|
     #                                   |- subquery_len -|
 
-    # WARNING(sang): context_len has different definition depending on if it is
+    # WARNING( ): context_len has different definition depending on if it is
     # prefill vs decoding. When it is prefill, it doesn't include new tokens.
     # When it is for decoding, it includes a new token.
 
@@ -110,7 +110,7 @@ class XFormersMetadata(AttentionMetadata, PagedAttentionMetadata):
 
     # Whether or not if cuda graph is enabled.
     # Cuda-graph is currently enabled for decoding only.
-    # TODO(woosuk): Move `use_cuda_graph` out since it's unrelated to attention.
+    # TODO(): Move `use_cuda_graph` out since it's unrelated to attention.
     use_cuda_graph: bool
 
     def __post_init__(self):
@@ -217,7 +217,7 @@ class XFormersImpl(AttentionImpl):
                     # As of Nov 2023, xformers only supports MHA. For MQA/GQA,
                     # project the key and value tensors to the desired number of
                     # heads.
-                    # TODO(woosuk): Use MQA/GQA kernels for higher performance.
+                    # TODO(): Use MQA/GQA kernels for higher performance.
                     query = query.view(query.shape[0], self.num_kv_heads,
                                        self.num_queries_per_kv,
                                        query.shape[-1])
@@ -245,7 +245,7 @@ class XFormersImpl(AttentionImpl):
                             self.head_size,
                             self.scale,
                         )
-                        # TODO(woosuk): Unnecessary copy. Optimize.
+                        # TODO(): Unnecessary copy. Optimize.
                         output[start:end].copy_(out)
                         start += prompt_len
 
@@ -309,7 +309,7 @@ class XFormersImpl(AttentionImpl):
         """
         # Set attention bias if not provided. This typically happens at
         # the very attention layer of every iteration.
-        # FIXME(woosuk): This is a hack.
+        # FIXME(): This is a hack.
         if attn_metadata.attn_bias is None:
             if self.alibi_slopes is None:
                 attn_bias = BlockDiagonalCausalMask.from_seqlens(
@@ -326,7 +326,7 @@ class XFormersImpl(AttentionImpl):
         op = xops.fmha.MemoryEfficientAttentionFlashAttentionOp[0] if (
             is_hip()) else None
         # No alibi slopes.
-        # TODO(woosuk): Too many view operations. Let's try to reduce
+        # TODO(): Too many view operations. Let's try to reduce
         # them in the future for code readability.
         if self.alibi_slopes is None:
             query = query.unsqueeze(0)
@@ -344,7 +344,7 @@ class XFormersImpl(AttentionImpl):
             return out.view_as(query)
 
         # Attention with alibi slopes.
-        # FIXME(woosuk): Because xformers does not support dynamic sequence
+        # FIXME(): Because xformers does not support dynamic sequence
         # lengths with custom attention bias, we process each prompt one by
         # one. This is inefficient, especially when we have many short prompts.
         output = torch.empty_like(query)
@@ -359,7 +359,7 @@ class XFormersImpl(AttentionImpl):
                 p=0.0,
                 scale=self.scale,
                 op=op)
-            # TODO(woosuk): Unnecessary copy. Optimize.
+            # TODO(): Unnecessary copy. Optimize.
             output[start:end].copy_(out.squeeze(0))
             start += prompt_len
         return output

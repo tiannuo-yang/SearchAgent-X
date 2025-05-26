@@ -67,12 +67,12 @@ class RotaryEmbedding(nn.Module):
 
     def _compute_inv_freq(self, base: Union[int, float]) -> torch.Tensor:
         """Compute the inverse frequency."""
-        # NOTE(woosuk): The HF implementation uses `torch.arange(...).float()`.
+        # NOTE(): The HF implementation uses `torch.arange(...).float()`.
         # However, we use `torch.arange(..., dtype=torch.float)` instead to
         # avoid numerical issues with large base values (e.g., 10000000).
         # This may cause a slight numerical difference between the HF
         # implementation and ours.
-        # NOTE(woosuk): To exactly match the HF implementation, we need to
+        # NOTE(): To exactly match the HF implementation, we need to
         # use CPU to compute the cache and then move it to GPU. However, we
         # create the cache on GPU for faster initialization. This may cause
         # a slight numerical difference between the HF implementation and ours.
@@ -113,7 +113,7 @@ class RotaryEmbedding(nn.Module):
                                      if offsets is not None else positions]
         cos, sin = cos_sin.chunk(2, dim=-1)
         if self.is_neox_style:
-            # NOTE(woosuk): Here we assume that the positions tensor has the
+            # NOTE(): Here we assume that the positions tensor has the
             # shape [batch_size, seq_len].
             cos = cos.repeat(1, 1, 2).unsqueeze(-2)
             sin = sin.repeat(1, 1, 2).unsqueeze(-2)
@@ -181,7 +181,7 @@ class LinearScalingRotaryEmbedding(RotaryEmbedding):
         inv_freq = self._compute_inv_freq(self.base)
         cache_list = []
         for scaling_factor in self.scaling_factors:
-            # NOTE(woosuk): self.max_position_embeddings is the original
+            # NOTE(): self.max_position_embeddings is the original
             # maximum length before applying the rope scaling.
             # Thus, the maximum length after applying the rope scaling is
             # self.max_position_embeddings * self.scaling_factor.
@@ -217,7 +217,7 @@ class DynamicNTKScalingRotaryEmbedding(RotaryEmbedding):
                          is_neox_style)
 
     def _compute_cos_sin_cache(self) -> torch.Tensor:
-        # NOTE(woosuk): self.max_position_embeddings is the original
+        # NOTE(): self.max_position_embeddings is the original
         # maximum length before applying the rope scaling.
         # Thus, the maximum length after applying the rope scaling is
         # self.max_position_embeddings * self.scaling_factor.

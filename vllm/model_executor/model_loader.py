@@ -29,7 +29,7 @@ def _get_model_architecture(
         model_config: ModelConfig) -> Tuple[Type[nn.Module], str]:
     architectures = getattr(model_config.hf_config, "architectures", [])
     # Special handling for quantized Mixtral.
-    # FIXME(woosuk): This is a temporary hack.
+    # FIXME(): This is a temporary hack.
     if (model_config.quantization is not None
             and "MixtralForCausalLM" in architectures):
         architectures = ["QuantMixtralForCausalLM"]
@@ -93,7 +93,7 @@ def get_model(model_config: ModelConfig, device_config: DeviceConfig,
                     model = model_class(model_config.hf_config,
                                         vision_language_config, linear_method)
         if model_config.load_format == "dummy":
-            # NOTE(woosuk): For accurate performance evaluation, we assign
+            # NOTE(): For accurate performance evaluation, we assign
             # random values to the weights.
             initialize_dummy_weights(model)
         else:

@@ -39,7 +39,7 @@ def test_beam_search_single_input(
     vllm_outputs = vllm_model.generate_beam_search(example_prompts, beam_width,
                                                    max_tokens)
     del vllm_model
-    # NOTE(woosuk): For some reason, the following GC is required to avoid
+    # NOTE(): For some reason, the following GC is required to avoid
     # GPU OOM errors in the following tests using `vllm_runner`.
     gc.collect()
     torch.cuda.empty_cache()

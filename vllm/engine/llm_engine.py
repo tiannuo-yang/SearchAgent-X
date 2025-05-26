@@ -92,7 +92,7 @@ class LLMEngine:
             f"kv_cache_dtype={cache_config.cache_dtype}, "
             f"device_config={device_config.device}, "
             f"seed={model_config.seed})")
-        # TODO(woosuk): Print more configs in debug mode.
+        # TODO(): Print more configs in debug mode.
 
         self.model_config = model_config
         self.cache_config = cache_config

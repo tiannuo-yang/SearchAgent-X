@@ -257,7 +257,7 @@ class ModelConfig:
     def get_head_size(self) -> int:
         if hasattr(self.hf_text_config, "head_dim"):
             return self.hf_text_config.head_dim
-        # FIXME(woosuk): This may not be true for all models.
+        # FIXME(): This may not be true for all models.
         return (self.hf_text_config.hidden_size //
                 self.hf_text_config.num_attention_heads)
 
@@ -389,7 +389,7 @@ class CacheConfig:
         parallel_config: "ParallelConfig",
     ) -> None:
         total_cpu_memory = get_cpu_memory()
-        # FIXME(woosuk): Here, it is assumed that the GPUs in a tensor parallel
+        # FIXME(): Here, it is assumed that the GPUs in a tensor parallel
         # group are in the same node. However, the GPUs may span multiple nodes.
         num_gpus_per_node = parallel_config.tensor_parallel_size
         cpu_memory_usage = self.swap_space_bytes * num_gpus_per_node

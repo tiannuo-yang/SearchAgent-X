@@ -348,7 +348,7 @@ def fused_moe(
             topk_weights,
             topk_ids,
             token_expert_indicies,
-            gating_output.float(),  # TODO(woosuk): Optimize this.
+            gating_output.float(),  # TODO(): Optimize this.
         )
         del token_expert_indicies  # Not used. Will be used in the future.
     if renormalize:

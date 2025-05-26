@@ -2,7 +2,7 @@ from typing import List, Optional
 
 import torch
 from torch import nn
-# TODO(xwjiang): We should port CLIPVisionModel's code over to not depend on
+# TODO( ): We should port CLIPVisionModel's code over to not depend on
 # transformers' impl.
 from transformers import CLIPVisionModel, LlavaConfig
 
@@ -25,7 +25,7 @@ _KEYS_TO_MODIFY_MAPPING = {
 }
 
 
-# TODO(xwjiang): Run benchmark and decide if TP.
+# TODO( ): Run benchmark and decide if TP.
 class LlavaMultiModalProjector(nn.Module):
 
     def __init__(self, vision_hidden_size: int, text_hidden_size: int,
@@ -152,7 +152,7 @@ class LlavaForConditionalGeneration(nn.Module):
                     f"supplied image input is consistent with "
                     f"image_input_shape in engine args.")
             if self.vision_tower is not None:
-                # TODO(xwjiang): Maybe port minimal CLIPVisionModel over.
+                # TODO( ): Maybe port minimal CLIPVisionModel over.
                 image_outputs = self.vision_tower(image_input,
                                                   output_hidden_states=True)
                 image_features = image_outputs.hidden_states[

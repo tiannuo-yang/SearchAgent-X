@@ -409,7 +409,7 @@ class AsyncLLMEngine:
         elif self.worker_use_ray:
             engine_class = ray.remote(num_cpus=0)(self._engine_class).remote
         else:
-            # FIXME(woosuk): This is a bit hacky. Be careful when changing the
+            # FIXME(): This is a bit hacky. Be careful when changing the
             # order of the arguments.
             cache_config = args[1]
             parallel_config = args[2]

@@ -18,7 +18,7 @@ llm = LLM(
     # max sequence length when targeting neuron device.
     # Currently, this is a known limitation in continuous batching support
     # in transformers-neuronx.
-    # TODO(liangfu): Support paged-attention in transformers-neuronx.
+    # TODO( ): Support paged-attention in transformers-neuronx.
     max_model_len=128,
     block_size=128,
     # The device can be automatically detected when AWS Neuron SDK is installed.

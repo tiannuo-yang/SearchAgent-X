@@ -1,14 +1,3 @@
-/*
-Adapted from https://github.com/mit-han-lab/llm-awq
-@article{lin2023awq,
-  title={AWQ: Activation-aware Weight Quantization for LLM Compression and Acceleration},
-  author={Lin, Ji and Tang, Jiaming and Tang, Haotian and Yang, Shang and Dang, Xingyu and Han, Song},
-  journal={arXiv},
-  year={2023}
-}
- */
-
-
 #include <torch/extension.h>
 #include <c10/cuda/CUDAGuard.h>
 
@@ -69,7 +58,7 @@ __global__ void __launch_bounds__(64) gemm_forward_4bit_cuda_m16nXk32(
   static constexpr int row_stride_warp = 32 * 8 / 32;
   static constexpr int row_stride = 2 * 32 * 8 / N;
   bool ld_zero_flag = (threadIdx.y * 32 + threadIdx.x) * 8 < N;
-  // TODO: Haotian: blockIdx_y / j_factors1 in A loading to support bsz > 16
+  // TODO:  : blockIdx_y / j_factors1 in A loading to support bsz > 16
   bool ld_A_flag = (blockIdx_y / j_factors1 * 16 + threadIdx.y * row_stride_warp + threadIdx.x * 8 / 32) < M;     // threadIdx.y is warp_id
   // bool wb_C_flag = (threadIdx.x / 4) < M;
 
@@ -114,7 +103,7 @@ __global__ void __launch_bounds__(64) gemm_forward_4bit_cuda_m16nXk32(
   for (int _k_0_0 = 0; _k_0_0 < k_bound; ++_k_0_0) {
     int k_0_0 = _k_0_0 * split_k_iters + blockIdx_z;
     __syncthreads();
-    // TODO: Haotian: blockIdx_y / j_factors1 in A loading to support bsz > 16
+    // TODO:  : blockIdx_y / j_factors1 in A loading to support bsz > 16
     if (ld_A_flag)
     {
       *(uint4*)(A_shared_ptr) = *(uint4*)(A_ptr + (k_0_0 * 32));
@@ -149,7 +138,7 @@ __global__ void __launch_bounds__(64) gemm_forward_4bit_cuda_m16nXk32(
 
       // uint4 B_loaded_scale = *(uint4*)(scaling_factors_shared + (threadIdx.x % (cta_N / 8)) * 8);
       // - zero and * scale
-      // TODO (Haotian): can save 4 assembly instructions if sormulate as deq = q * scale - zero * scale.
+      // TODO ( ): can save 4 assembly instructions if sormulate as deq = q * scale - zero * scale.
       asm volatile("sub.f16x2 %0, %1, %2;\n" : "=r"(B_loaded_fp16.x) : "r"(B_loaded_fp16.x), "r"(B_loaded_zero.x));
       asm volatile("fma.rn.f16x2 %0, %1, %2, %3;\n" : "=r"(B_loaded_fp16.x) : "r"(B_loaded_fp16.x), "r"(B_loaded_scale.x), "r"(ZERO));
       asm volatile("sub.f16x2 %0, %1, %2;\n" : "=r"(B_loaded_fp16.y) : "r"(B_loaded_fp16.y), "r"(B_loaded_zero.y));

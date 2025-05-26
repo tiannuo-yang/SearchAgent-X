@@ -1,6 +1,6 @@
 """Attention layer with Flash and PagedAttention.
 
-NOTE(woosuk): At the moment, this file includes a lot of duplicated code from
+NOTE(): At the moment, this file includes a lot of duplicated code from
 XFormers backend. The duplicated code will be removed once we use flash-attn or
 flashinfer for all the attention operations.
 """
@@ -73,7 +73,7 @@ class FlashAttentionMetadata(AttentionMetadata, PagedAttentionMetadata):
     # The number of generation tokens. Doesn't include padding.
     num_generation_tokens: int
 
-    # NOTE(sang): Definition of context_len, subquery_len, and seqlen.
+    # NOTE( ): Definition of context_len, subquery_len, and seqlen.
     # |---------- N-1 iteration --------|
     # |---------------- N iteration ---------------------|
     # |- tokenA -|......................|-- newTokens ---|
@@ -81,7 +81,7 @@ class FlashAttentionMetadata(AttentionMetadata, PagedAttentionMetadata):
     # |-------------------- seqlen ----------------------|
     #                                   |- subquery_len -|
 
-    # WARNING(sang): context_len has different definition depending on if it is
+    # WARNING( ): context_len has different definition depending on if it is
     # prefill vs decoding. When it is prefill, it doesn't include new tokens.
     # When it is for decoding, it includes a new token.
 
@@ -100,7 +100,7 @@ class FlashAttentionMetadata(AttentionMetadata, PagedAttentionMetadata):
 
     # Whether or not if cuda graph is enabled.
     # Cuda-graph is currently enabled for decoding only.
-    # TODO(woosuk): Move `use_cuda_graph` out since it's unrelated to attention.
+    # TODO(): Move `use_cuda_graph` out since it's unrelated to attention.
     use_cuda_graph: bool
 
 
