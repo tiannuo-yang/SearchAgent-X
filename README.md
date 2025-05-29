@@ -14,8 +14,8 @@
 </div>
 
 🔔 When to Use **SearchAgent-X**:
-- Serving: expecting low latency and high throughput LLM search agents;
-- Post-training (e.g., reinforcement learning): mitigating time-consuming, multi-turn LLM rollouts.
+- **Serving**: expecting low latency and high throughput LLM search agents;
+- **Post-training** (e.g., reinforcement learning): mitigating time-consuming, multi-turn LLM rollouts.
 
 ---
 
