@@ -41,6 +41,8 @@ SearchAgent-X requires these datasets and models for running interleaved search 
 - LLM Reasoning Model:  [7B model](https://huggingface.co/PeterJinGo/SearchR1-nq_hotpotqa_train-qwen2.5-7b-em-ppo/commit/44ac5ffefbee4d7d32890066e6f3888ad7a273a1); [14B model](https://huggingface.co/PeterJinGo/SearchR1-nq_hotpotqa_train-qwen2.5-14b-em-ppo-v0.2)
 - Request Dataset:  [Musique](https://huggingface.co/datasets/RUC-NLPIR/FlashRAG_datasets/tree/main/musique)
 
+😄 You can easily find them all in one [HF Collection](https://huggingface.co/collections/TiannuoYang/searchagent-x-6864f57138d1c5d71439feea).
+
 ### Run SearchAgent-X
 - Modify the paths to your downloaded embedding model, HNSW index, and corpus in `config.py`
 - Start Retriever Server  
